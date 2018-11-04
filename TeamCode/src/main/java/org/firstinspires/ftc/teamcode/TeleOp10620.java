@@ -5,7 +5,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-//import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp (name = "TeleOp10620", group = "PioneerMiddleSchool")
 public class TeleOp10620 extends LinearOpMode
@@ -14,8 +15,11 @@ public class TeleOp10620 extends LinearOpMode
     private DcMotor motorLeftback;
     private DcMotor motorRightback;
     private DcMotor ABMotor;
-    //private DcMotor PullMotor;
     private DcMotor ALMotor;
+    private Servo placeServo;
+    private Servo nofallServo;
+    private DcMotor BasketMotor;
+    private DcMotor PullyMotor;
 
 
     //public TeleOp10620() {
@@ -29,8 +33,12 @@ public class TeleOp10620 extends LinearOpMode
         DcMotor motorRightback = hardwareMap.dcMotor.get("motorRightback");
         DcMotor ABMotor = hardwareMap.dcMotor.get("ABMotor");
         DcMotor ALMotor = hardwareMap.dcMotor.get("ALMotor");
-        motorLeftback.setDirection(DcMotor.Direction.REVERSE);
-       // motorLeftfront.setDirection(DcMotor.Direction.REVERSE);
+        DcMotor BasketMotor = hardwareMap.dcMotor.get("BasketMotor");
+        DcMotor PullyMotor = hardwareMap.dcMotor.get("PullyMotor");
+        Servo placeServo = hardwareMap.servo.get("placeServo");
+        Servo nofallServo = hardwareMap.servo.get("nofallServo");
+
+        motorLeftback.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
 
@@ -41,8 +49,9 @@ public class TeleOp10620 extends LinearOpMode
             double rightPower;
 
 
-            double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
+            double drive = gamepad1.left_stick_y * 0.8;
+            double turn  =  gamepad1.right_stick_x * 0.5;
+
 
             leftPower    = drive + turn;
             rightPower   = drive - turn;
@@ -54,21 +63,22 @@ public class TeleOp10620 extends LinearOpMode
                 rightPower *= scale;
             }
 
-/*            if(gamepad2.x){
-                pullyServo.setPosition(360);
-            }else if (gamepad2.b){
-                pullyServo.setPosition(0);
-            }
-            else{
-                pullyServo.setPosition(180);
-            }
-*/
             motorLeftback.setPower(leftPower);
             motorRightback.setPower(rightPower);
 
-            ABMotor.setPower(gamepad2.left_stick_y);
-            ALMotor.setPower(gamepad2.right_stick_x);
-
+            ABMotor.setPower(gamepad2.left_stick_y * 0.5);
+            ALMotor.setPower(gamepad2.right_stick_x * 0.65);
+            BasketMotor.setPower(gamepad2.left_trigger * 0.8 -gamepad2.right_trigger *0.8);
+            PullyMotor.setPower(gamepad1.left_trigger * 0.8 -gamepad1.right_trigger *0.8);
+            if (gamepad2.a) {
+                nofallServo.setPosition(0.5);
+            }
+            else if(gamepad2.b){
+                nofallServo.setPosition(0);
+            }
+            else{
+                nofallServo.setPosition(0);
+            }
             idle();
 
         }
